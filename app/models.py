@@ -18,6 +18,7 @@ class Supplier(Base):
     name = Column(String, index=True, nullable=False)
     address = Column(String, nullable=False)
     phone = Column(String(20), nullable=False)
+    created_by = Column(String, nullable=False)
 
     products = relationship("Product", back_populates="suppliers")
 
@@ -28,6 +29,7 @@ class Product(Base):
     name = Column(String, index=True, nullable=False)
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=True)
+    created_by = Column(String, nullable=False)
     supplier_id = Column(Integer, ForeignKey("supplier.id"), nullable=False)
 
     suppliers = relationship("Supplier", back_populates="products")

@@ -3,11 +3,11 @@ from ..models import Supplier
 from app.schemas import supplier as schemas
 from fastapi import HTTPException
 
-def create_supplier(db: Session, supplier: schemas.SupplierCreate):
+def create_supplier(db: Session, supplier: schemas.SupplierCreate, created_by: str):
     supplier_id = db.query(Supplier).filter(Supplier.phone == supplier.phone).first()
     if supplier_id:
         raise HTTPException(status_code=403, detail="Supplier can't be create") 
-    db_supplier = Supplier(name=supplier.name, address=supplier.address, phone=supplier.phone)
+    db_supplier = Supplier(name=supplier.name, address=supplier.address, phone=supplier.phone, created_by=created_by)
     db.add(db_supplier)
     db.commit()
     db.refresh(db_supplier)

@@ -11,7 +11,8 @@ class ProductCreate(ProductBase):
 
 class Product(ProductBase):
     id: int
+    created_by: str
     supplier_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

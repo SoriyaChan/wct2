@@ -12,7 +12,8 @@ class SupplierCreate(SupplierBase):
 
 class Supplier(SupplierBase):
     id: int
+    created_by: str
     products: List[Product] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
