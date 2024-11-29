@@ -28,6 +28,7 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     price = Column(Integer, nullable=False)
+    stock = Column(Integer, nullable=False)
     description = Column(String, nullable=True)
     created_by = Column(String, nullable=False)
     supplier_id = Column(Integer, ForeignKey("supplier.id"), nullable=False)

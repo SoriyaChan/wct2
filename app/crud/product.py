@@ -10,6 +10,7 @@ def create_product(db: Session, product: schemas.ProductCreate, created_by: str)
     db_product = Product(
         name=product.name,
         price=product.price,
+        stock=product.stock,
         description=product.description,
         supplier_id=product.supplier_id,
         created_by=created_by)
@@ -36,6 +37,7 @@ def update_product(db: Session, product_id: int, updated_product: schemas.Produc
         raise HTTPException(status_code=404, detail="Supplier not found") 
     db_product.name = updated_product.name
     db_product.price = updated_product.price
+    db_product.stock = updated_product.stock
     db_product.description = updated_product.description
     db_product.supplier_id = updated_product.supplier_id
     db_product.created_by = created_by
