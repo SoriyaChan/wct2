@@ -1,12 +1,15 @@
 from sqlalchemy.orm import Session
 from ..models import Supplier
 from app.schemas import supplier as schemas
+from ..dependency import admin
 from fastapi import HTTPException
 
 def create_supplier(db: Session, supplier: schemas.SupplierCreate, created_by: str):
     supplier_id = db.query(Supplier).filter(Supplier.phone == supplier.phone).first()
     if supplier_id:
         raise HTTPException(status_code=403, detail="Supplier can't be create") 
+    if created_by != admin["name"]:
+        raise HTTPException(status_code=403, detail="You do not have permission to create new records") 
     db_supplier = Supplier(name=supplier.name, address=supplier.address, phone=supplier.phone, created_by=created_by)
     db.add(db_supplier)
     db.commit()

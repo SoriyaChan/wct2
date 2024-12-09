@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from app.schemas import supplier as schemas
 from app.crud import supplier as crud
-from ..dependencies import get_db, check_user_login
+from ..dependency import get_db, check_user_login
 from typing import List
 
 router = APIRouter(prefix="/supplier", tags=["supplier"])
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/supplier", tags=["supplier"])
 @router.post("/", response_model=schemas.Supplier)
 def create_supplier(request: Request, supplier: schemas.SupplierCreate, db: Session = Depends(get_db)):
     user = check_user_login(db=db, request=request)
-    username = user.userName
+    username = user
     return crud.create_supplier(db=db, supplier=supplier, created_by=username)
 
 @router.get("/", response_model=List[schemas.Supplier])
