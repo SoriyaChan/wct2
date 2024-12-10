@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+</head>
+<body>
+
+    <h1>User Registration</h1>
+
+<form id="registrationForm">
+    <label for="userName">Username:</label><br>
+    <input type="text" id="userName" name="userName" placeholder="Enter your username" required><br><br>
+
+    <label for="userEmail">Email:</label><br>
+    <input type="email" id="userEmail" name="userEmail" placeholder="Enter your email" required><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" placeholder="Enter your password" required><br><br>
+
+    <button type="submit">Register</button>
+</form>
+
+<p id="registerResponse"></p>
+
+<h1>User Login</h1>
+
+<form id="loginForm">
+    <label for="loginEmail">Email:</label><br>
+    <input type="email" id="loginEmail" name="userEmail" placeholder="Enter your email" required><br><br>
+
+    <label for="loginPassword">Password:</label><br>
+    <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required><br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+<p id="loginResponse"></p>
+
+<script>
+    // 📍 User Registration
+    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent page refresh
+
+        // Extract form values
+        const userName = document.getElementById('userName').value;
+        const userEmail = document.getElementById('userEmail').value;
+        const password = document.getElementById('password').value;
+
+        // Create the request body (matching the UserCreate schema)
+        const userData = {
+            userName: userName,
+            userEmail: userEmail,
+            password: password
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('registerResponse').textContent = `User registered successfully! Welcome, ${result.userName}`;
+            } else {
+                document.getElementById('registerResponse').textContent = `Error: ${result.detail || 'An error occurred.'}`;
+            }
+        } catch (error) {
+            document.getElementById('registerResponse').textContent = 'Network error or server is unavailable.';
+            console.error('Error:', error);
+        }
+    });
+
+    // 📍 User Login
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent page refresh
+
+        // Extract form values
+        const userEmail = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        // Create the request body (matching the UserLogin schema)
+        const userData = {
+            userEmail: userEmail,
+            password: password
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById('loginResponse').textContent = result.message;
+            } else {
+                document.getElementById('loginResponse').textContent = `Error: ${result.detail || 'An error occurred.'}`;
+            }
+        } catch (error) {
+            document.getElementById('loginResponse').textContent = 'Network error or server is unavailable.';
+            console.error('Error:', error);
+        }
+    });
+</script>
+    
+</body>
+</html>
