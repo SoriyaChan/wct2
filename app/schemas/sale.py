@@ -1,14 +1,22 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
 
-class SaleBase(BaseModel):
+class SaleProductCreate(BaseModel):
     product_id: int
     quantity: int
 
-class SaleCreate(SaleBase):
-    pass
+class SaleCreate(BaseModel):
+    products: List[SaleProductCreate]
 
-class Sale(SaleBase):
+class SaleProductAssociation(SaleProductCreate):
+    id: int
+    price_at_sale: int
+
+    class Config:
+        from_attributes = True
+
+class Sale(BaseModel):
     id: int
     sold_by: str
     total_price: int

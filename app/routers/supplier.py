@@ -9,8 +9,7 @@ router = APIRouter(prefix="/supplier", tags=["supplier"])
 
 @router.post("/", response_model=schemas.Supplier)
 def create_supplier(request: Request, supplier: schemas.SupplierCreate, db: Session = Depends(get_db)):
-    user = check_user_login(db=db, request=request)
-    username = user
+    username = check_user_login(db=db, request=request)
     return crud.create_supplier(db=db, supplier=supplier, created_by=username)
 
 @router.get("/", response_model=List[schemas.Supplier])

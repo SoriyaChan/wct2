@@ -9,8 +9,7 @@ router = APIRouter(prefix="/sale", tags=["sale"])
 
 @router.post("/", response_model=schemas.Sale)
 def create_sale(request: Request, sale: schemas.SaleCreate, db: Session = Depends(get_db)):
-    user = check_user_login(db=db, request=request)
-    username = user
+    username = check_user_login(db=db, request=request)
     return crud.create_sale(db=db, sale=sale, sold_by=username)
 
 @router.get("/", response_model=List[schemas.Sale])

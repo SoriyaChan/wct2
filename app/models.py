@@ -1,8 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from .database import Base
 
+SaleProductAssociation = Table(
+    "sale_product",
+    Base.metadata,
+    Column("sale_id", Integer, ForeignKey("sale.id"), primary_key=True),
+    Column("product_id", Integer, ForeignKey("product.id"), primary_key=True),
+    Column("quantity", Integer, nullable=False),  
+    Column("price_at_sale", Integer, nullable=False),
+)
 
 class User(Base):
     __tablename__ = "user"
@@ -35,16 +43,14 @@ class Product(Base):
     supplier_id = Column(Integer, ForeignKey("supplier.id"), nullable=False)
 
     suppliers = relationship("Supplier", back_populates="products")
-    sales = relationship("Sale", back_populates="products")
+    sales = relationship("Sale", secondary=SaleProductAssociation, back_populates="products")
 
 class Sale(Base):
     __tablename__ = "sale"
 
     id = Column(Integer, primary_key=True, index=True)
     sold_by = Column(String, nullable=False)
-    product_id = Column(Integer, ForeignKey("product.id"), nullable=False)
-    quantity = Column(Integer, nullable=False)
     total_price = Column(Integer, nullable=False)
     transaction_date = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
-    products = relationship("Product", back_populates="sales")
+    products = relationship("Product", secondary=SaleProductAssociation, back_populates="sales")
