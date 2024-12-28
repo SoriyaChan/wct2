@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Updates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Inventory Updates</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Inventory ID</th>
+                <th>Product ID</th>
+                <th>Stock</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody id="inventory-data">
+        </tbody>
+    </table>
+    <script>
+        const websocket = new WebSocket("ws://localhost:8000/ws/inventory");
+
+        websocket.onmessage = function(event) {
+            const inventoryData = JSON.parse(event.data);
+            const tableBody = document.getElementById("inventory-data");
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            inventoryData.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.product_inventory_id}</td>
+                    <td>${item.product_id}</td>
+                    <td>${item.stock}</td>
+                    <td>${new Date(item.last_updated).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        websocket.onclose = function() {
+            alert("WebSocket connection closed. Please refresh the page to reconnect.");
+        };
+
+        websocket.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
+    </script>
+</body>
+</html>

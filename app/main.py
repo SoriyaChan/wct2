@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import supplier, user, product, sale, order
+from .routers import supplier, user, product, sale, order, websocket
 from .database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -24,3 +24,4 @@ app.include_router(supplier.router)
 app.include_router(product.router)
 app.include_router(order.router)
 app.include_router(sale.router)
+app.include_router(websocket.router)
