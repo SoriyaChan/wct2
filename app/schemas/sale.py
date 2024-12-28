@@ -10,17 +10,17 @@ class SaleCreate(BaseModel):
     products: List[SaleProductCreate]
 
 class SaleProductAssociation(SaleProductCreate):
-    id: int
-    price_at_sale: int
+    sale_id: int
+    unit_price: float
 
     class Config:
         from_attributes = True
 
 class Sale(BaseModel):
-    id: int
+    sale_id: int
     sold_by: str
-    total_price: int
-    transaction_date: datetime
+    total_price: float
+    sale_date: datetime
 
     class Config:
         from_attributes = True

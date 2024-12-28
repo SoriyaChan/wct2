@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import supplier, user, product, sale
+from .routers import supplier, user, product, sale, order
 from .database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,4 +22,5 @@ app.add_middleware(
 app.include_router(user.router)
 app.include_router(supplier.router)
 app.include_router(product.router)
+app.include_router(order.router)
 app.include_router(sale.router)

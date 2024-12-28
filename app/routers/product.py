@@ -12,7 +12,7 @@ def create_product(request: Request, product: schemas.ProductCreate, db: Session
     username = check_user_login(db=db, request=request)
     return crud.create_product(db=db, product=product, created_by=username)
 
-@router.get("/", response_model=List[schemas.Product])
+@router.get("/product", response_model=List[schemas.Product])
 def read_products(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     user = check_user_login(db=db, request=request)
     return crud.get_products(db=db, skip=skip, limit=limit)
@@ -31,3 +31,8 @@ def update_product(request: Request, product_id: int, product: schemas.ProductCr
 def delete_product(request: Request, product_id: int, db: Session = Depends(get_db)):
     username = check_user_login(db=db, request=request)
     return crud.delete_product(db=db, product_id=product_id, username=username)
+
+@router.get("/", response_model=List[schemas.Product_Inventory])
+def read_product_stock(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    user = check_user_login(db=db, request=request)
+    return crud.get_product_stock(db=db, skip=skip, limit=limit)

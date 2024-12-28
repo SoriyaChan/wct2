@@ -1,0 +1,10 @@
+User:
+	Register, Login(user,admin)
+Supplier:
+	Create Supplier(admin), Read Suppliers, Read Supplier
+Product:
+	Create Product(admin), Read Products, Read Product, Update Product(admin), Delete Product(admin), Read Product Stock
+Order:
+	Create Order(admin), Read Orders, Read Orderproduct
+Sale:
+	Create Sale, Read Sales, Read Saleproduct

@@ -16,3 +16,8 @@ def create_sale(request: Request, sale: schemas.SaleCreate, db: Session = Depend
 def read_sales(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     user = check_user_login(db=db, request=request)
     return crud.get_sales(db=db, skip=skip, limit=limit)
+
+@router.get("/saleproduct", response_model=List[schemas.SaleProductAssociation])
+def read_saleproduct(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    user = check_user_login(db=db, request=request)
+    return crud.get_saleproduct(db=db, skip=skip, limit=limit)
