@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table, Float
 from sqlalchemy.orm import relationship
-from datetime import datetime, timezone
 from .database import Base
 
 OrderProductAssociation = Table(
@@ -9,7 +8,7 @@ OrderProductAssociation = Table(
     Column("order_id", Integer, ForeignKey("Orderr.order_id"), primary_key=True),
     Column("product_id", Integer, ForeignKey("Product.product_id"), primary_key=True),
     Column("quantity", Integer, nullable=False),  
-    Column("unit_price", Integer, nullable=False),
+    Column("unit_price", Float, nullable=False),
 )
 
 SaleProductAssociation = Table(
@@ -45,8 +44,10 @@ class Product(Base):
 
     product_id = Column(Integer, primary_key=True, index=True)
     product_name = Column(String, index=True, nullable=False)
-    unit_price = Column(Integer, nullable=False)
+    unit_price = Column(Float, nullable=False)
     description = Column(String, nullable=True)
+    min_threshold = Column(Integer, nullable=False)
+    max_threshold = Column(Integer, nullable=False)
     created_by = Column(String, nullable=False)
     supplier_id = Column(Integer, ForeignKey("Supplier.supplier_id"), nullable=False)
 
@@ -69,7 +70,7 @@ class Order(Base):
 
     order_id = Column(Integer, primary_key=True, index=True)
     order_by = Column(String, nullable=False)
-    total_price = Column(Integer, nullable=False)
+    total_price = Column(Float, nullable=False)
     order_date = Column(DateTime, nullable=False)
 
 class Sale(Base):

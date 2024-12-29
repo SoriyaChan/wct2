@@ -4,8 +4,10 @@ from datetime import datetime
 
 class ProductBase(BaseModel):
     product_name: str
-    unit_price: int
+    unit_price: float
     description: Optional[str] = None
+    min_threshold: int
+    max_threshold: int
 
 class ProductCreate(ProductBase):
     supplier_id: int

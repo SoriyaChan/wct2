@@ -11,7 +11,7 @@ class OrderCreate(BaseModel):
 
 class OrderProductAssociation(OrderProductCreate):
     order_id: int
-    unit_price: int
+    unit_price: float
 
     class Config:
         from_attributes = True
@@ -19,7 +19,7 @@ class OrderProductAssociation(OrderProductCreate):
 class Order(BaseModel):
     order_id: int
     order_by: str
-    total_price: int
+    total_price: float
     order_date: datetime
 
     class Config:

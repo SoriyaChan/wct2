@@ -5,6 +5,6 @@ Supplier:
 Product:
 	Create Product(admin), Read Products, Read Product, Update Product(admin), Delete Product(admin), Read Product Stock
 Order:
-	Create Order(admin), Read Orders, Read Orderproduct
+	Create Order, Read Orders, Read Orderproduct
 Sale:
 	Create Sale, Read Sales, Read Saleproduct
