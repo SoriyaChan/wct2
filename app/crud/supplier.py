@@ -9,9 +9,9 @@ def create_supplier(db: Session, supplier: schemas.SupplierCreate, created_by: s
     if created_by != admin["name"]:
         raise HTTPException(status_code=403, detail="You do not have permission to create new records") 
     # query existing phone
-    supplier = db.query(Supplier).filter(Supplier.phone == supplier.phone).first()
+    checksupplier = db.query(Supplier).filter(Supplier.phone == supplier.phone).first()
     # if there is, can't create
-    if supplier:
+    if checksupplier:
         raise HTTPException(status_code=403, detail="Supplier can't be create") 
     # add supplier
     db_supplier = Supplier(supplier_name=supplier.supplier_name, address=supplier.address, phone=supplier.phone, created_by=created_by)
