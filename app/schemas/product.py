@@ -11,11 +11,24 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     supplier_id: int
+    category_id: int
 
 class Product(ProductBase):
     product_id: int
     created_by: str
     supplier_id: int
+    category_id: int
+
+    class Config:
+        from_attributes = True
+
+class ProductCategoryCreate(BaseModel):
+    category_name: str
+    description: str
+
+class ProductCategory(ProductCategoryCreate):
+    category_id: int
+    created_by: str
 
     class Config:
         from_attributes = True

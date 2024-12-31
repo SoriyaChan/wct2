@@ -50,10 +50,23 @@ class Product(Base):
     max_threshold = Column(Integer, nullable=False)
     created_by = Column(String, nullable=False)
     supplier_id = Column(Integer, ForeignKey("Supplier.supplier_id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("Product_Category.category_id"), nullable=True)
 
     suppliers = relationship("Supplier", back_populates="products")
+    categories = relationship("Product_Category", back_populates="products")
+    orders = relationship("Order", secondary=OrderProductAssociation, back_populates="products")
     sales = relationship("Sale", secondary=SaleProductAssociation, back_populates="products")
     product_inventories = relationship("Product_Inventory", back_populates="products")
+
+class Product_Category(Base):
+    __tablename__ = "Product_Category"
+
+    category_id = Column(Integer, primary_key=True, index=True)
+    category_name = Column(String(255), nullable=False, unique=True)
+    description = Column(String, nullable=True)
+    created_by = Column(String, nullable=False)
+
+    products = relationship("Product", back_populates="categories")
 
 class Product_Inventory(Base):
     __tablename__ = "Product_Inventory"
@@ -72,6 +85,8 @@ class Order(Base):
     order_by = Column(String, nullable=False)
     total_price = Column(Float, nullable=False)
     order_date = Column(DateTime, nullable=False)
+
+    products = relationship("Product", secondary=OrderProductAssociation, back_populates="orders")
 
 class Sale(Base):
     __tablename__ = "Sale"
