@@ -12,7 +12,6 @@ class SupplierCreate(SupplierBase):
 
 class Supplier(SupplierBase):
     supplier_id: int
-    created_by: str
     products: List[Product] = []
 
     class Config:

@@ -15,7 +15,6 @@ class ProductCreate(ProductBase):
 
 class Product(ProductBase):
     product_id: int
-    created_by: str
     supplier_id: int
     category_id: int
 
@@ -28,7 +27,6 @@ class ProductCategoryCreate(BaseModel):
 
 class ProductCategory(ProductCategoryCreate):
     category_id: int
-    created_by: str
 
     class Config:
         from_attributes = True

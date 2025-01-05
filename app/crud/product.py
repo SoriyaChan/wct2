@@ -1,13 +1,9 @@
 from sqlalchemy.orm import Session
 from ..models import Product, Supplier, Product_Inventory, Product_Category
 from app.schemas import product as schemas
-from ..dependency import admin
 from fastapi import HTTPException
 
-def create_product(db: Session, product: schemas.ProductCreate, created_by: str):
-    # if not admin, can't create
-    if created_by != admin["name"]:
-        raise HTTPException(status_code=403, detail="You do not have permission to create new records")
+def create_product(db: Session, product: schemas.ProductCreate):
     # query there is an existing supplier 
     supplier_id = db.query(Supplier).filter(Supplier.supplier_id == product.supplier_id).first()
     # if none
@@ -21,8 +17,7 @@ def create_product(db: Session, product: schemas.ProductCreate, created_by: str)
         min_threshold=product.min_threshold,
         max_threshold=product.max_threshold,
         supplier_id=product.supplier_id,
-        category_id=product.category_id,
-        created_by=created_by)
+        category_id=product.category_id)
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -39,10 +34,7 @@ def get_product(db: Session, product_id: int):
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
-def update_product(db: Session, product_id: int, updated_product: schemas.ProductCreate, created_by: str):
-    # if not admin, can't update
-    if created_by != admin["name"]:
-        raise HTTPException(status_code=403, detail="You do not have permission to update records")
+def update_product(db: Session, product_id: int, updated_product: schemas.ProductCreate):
     # query product id
     db_product = db.query(Product).filter(Product.product_id == product_id).first()
     # if none
@@ -61,15 +53,11 @@ def update_product(db: Session, product_id: int, updated_product: schemas.Produc
     db_product.max_threshold = updated_product.max_threshold
     db_product.supplier_id = updated_product.supplier_id
     db_product.category_id = updated_product.category_id
-    db_product.created_by = created_by
     db.commit()
     db.refresh(db_product)
     return db_product
 
-def delete_product(db: Session, product_id: int, username: str):
-    # if not admin, can't delete
-    if username != admin["name"]:
-        raise HTTPException(status_code=403, detail="You do not have permission to delete records")
+def delete_product(db: Session, product_id: int):
     # query product id
     db_product = db.query(Product).filter(Product.product_id == product_id).first()
     # if none
@@ -83,10 +71,7 @@ def delete_product(db: Session, product_id: int, username: str):
 def get_product_stock(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Product_Inventory).offset(skip).limit(limit).all()
 
-def create_product_category(db: Session, category: schemas.ProductCategoryCreate, created_by: str):
-    # if not admin, can't create
-    if created_by != admin["name"]:
-        raise HTTPException(status_code=403, detail="You do not have permission to create new records")
+def create_product_category(db: Session, category: schemas.ProductCategoryCreate):
     # query existing name
     existing_category = db.query(Product_Category).filter(Product_Category.category_name == category.category_name).first()
     # if there is 
@@ -95,8 +80,7 @@ def create_product_category(db: Session, category: schemas.ProductCategoryCreate
     # add new category
     new_category = Product_Category(
         category_name=category.category_name,
-        description=category.description,
-        created_by=created_by
+        description=category.description
     )
     db.add(new_category)
     db.commit()

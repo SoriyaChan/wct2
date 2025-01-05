@@ -18,7 +18,6 @@ class OrderProductAssociation(OrderProductCreate):
 
 class Order(BaseModel):
     order_id: int
-    order_by: str
     total_price: float
     order_date: datetime
 

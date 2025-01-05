@@ -4,11 +4,10 @@ from ..models import Product, Order, OrderProductAssociation, Product_Inventory
 from app.schemas import order as schemas
 from fastapi import HTTPException
 from datetime import datetime, timedelta ,timezone
-from ..dependency import admin
 
 SEAsia = timezone(timedelta(hours=7))
 
-def create_order(db: Session, order: schemas.OrderCreate, order_by: str):
+def create_order(db: Session, order: schemas.OrderCreate):
     total_price = 0
     # loop product in products
     for order_product in order.products:
@@ -20,7 +19,6 @@ def create_order(db: Session, order: schemas.OrderCreate, order_by: str):
         total_price += order_product.quantity * product.unit_price
     # add an order
     db_order = Order(
-        order_by=order_by,
         total_price=total_price,
         order_date=datetime.now(SEAsia)
     )

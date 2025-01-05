@@ -26,7 +26,8 @@ class User(Base):
     userID = Column(Integer, primary_key=True, index=True)
     userName = Column(String(30), nullable=False, unique=True)
     userEmail = Column(String(30), nullable=False, unique=True)
-    password = Column(String, nullable=False)
+    password = Column(String(50), nullable=False)
+    role = Column(String, nullable=False)
 
 class Supplier(Base):
     __tablename__ = "Supplier"
@@ -35,7 +36,6 @@ class Supplier(Base):
     supplier_name = Column(String, index=True, nullable=False)
     address = Column(String, nullable=False)
     phone = Column(String(20), nullable=False)
-    created_by = Column(String, nullable=False)
 
     products = relationship("Product", back_populates="suppliers")
 
@@ -48,7 +48,6 @@ class Product(Base):
     description = Column(String, nullable=True)
     min_threshold = Column(Integer, nullable=False)
     max_threshold = Column(Integer, nullable=False)
-    created_by = Column(String, nullable=False)
     supplier_id = Column(Integer, ForeignKey("Supplier.supplier_id"), nullable=False)
     category_id = Column(Integer, ForeignKey("Product_Category.category_id"), nullable=True)
 
@@ -64,7 +63,6 @@ class Product_Category(Base):
     category_id = Column(Integer, primary_key=True, index=True)
     category_name = Column(String(255), nullable=False, unique=True)
     description = Column(String, nullable=True)
-    created_by = Column(String, nullable=False)
 
     products = relationship("Product", back_populates="categories")
 
@@ -82,7 +80,6 @@ class Order(Base):
     __tablename__ = "Orderr"
 
     order_id = Column(Integer, primary_key=True, index=True)
-    order_by = Column(String, nullable=False)
     total_price = Column(Float, nullable=False)
     order_date = Column(DateTime, nullable=False)
 
@@ -92,7 +89,6 @@ class Sale(Base):
     __tablename__ = "Sale"
 
     sale_id = Column(Integer, primary_key=True, index=True)
-    sold_by = Column(String, nullable=False)
     total_price = Column(Float, nullable=False)
     sale_date = Column(DateTime, nullable=False)
 

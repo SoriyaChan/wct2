@@ -18,7 +18,6 @@ class SaleProductAssociation(SaleProductCreate):
 
 class Sale(BaseModel):
     sale_id: int
-    sold_by: str
     total_price: float
     sale_date: datetime
 

@@ -28,7 +28,7 @@ def get_low_stock_products(db: Session, skip: int = 0, limit: int = 100):
     return low_stock_products
 
     
-def create_sale(db: Session, sale: schemas.SaleCreate, sold_by: str):
+def create_sale(db: Session, sale: schemas.SaleCreate):
     total_price = 0
     # loop product in products
     for sale_product in sale.products:
@@ -52,7 +52,6 @@ def create_sale(db: Session, sale: schemas.SaleCreate, sold_by: str):
         product_stock.stock -= sale_product.quantity
     # add sale
     db_sale = Sale(
-        sold_by=sold_by,
         total_price=total_price,
         sale_date=datetime.now(SEAsia)
     )
@@ -77,7 +76,7 @@ def create_sale(db: Session, sale: schemas.SaleCreate, sold_by: str):
     low_stock_products = get_low_stock_products(db=db)
     if low_stock_products:
         order_data = orderschemas.OrderCreate(products=low_stock_products)
-        order.create_order(db=db, order=order_data, order_by=sold_by)
+        order.create_order(db=db, order=order_data)
 
     db.commit()
     return db_sale
