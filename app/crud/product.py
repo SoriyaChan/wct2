@@ -1,9 +1,14 @@
 from sqlalchemy.orm import Session
-from ..models import Product, Supplier, Product_Inventory, Product_Category
+from ..models import Product, Supplier, Product_Inventory, Product_Category, User
 from app.schemas import product as schemas
-from fastapi import HTTPException
+from fastapi import HTTPException, Header
 
-def create_product(db: Session, product: schemas.ProductCreate):
+def create_product(db: Session, product: schemas.ProductCreate, api_key: str = Header(...)):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to create product")
     # query there is an existing supplier 
     supplier_id = db.query(Supplier).filter(Supplier.supplier_id == product.supplier_id).first()
     # if none
@@ -34,7 +39,12 @@ def get_product(db: Session, product_id: int):
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
-def update_product(db: Session, product_id: int, updated_product: schemas.ProductCreate):
+def update_product(db: Session, product_id: int, updated_product: schemas.ProductCreate, api_key: str = Header(...)):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to update product")
     # query product id
     db_product = db.query(Product).filter(Product.product_id == product_id).first()
     # if none
@@ -57,7 +67,12 @@ def update_product(db: Session, product_id: int, updated_product: schemas.Produc
     db.refresh(db_product)
     return db_product
 
-def delete_product(db: Session, product_id: int):
+def delete_product(db: Session, product_id: int, api_key: str = Header(...)):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to update product")
     # query product id
     db_product = db.query(Product).filter(Product.product_id == product_id).first()
     # if none
@@ -71,7 +86,12 @@ def delete_product(db: Session, product_id: int):
 def get_product_stock(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Product_Inventory).offset(skip).limit(limit).all()
 
-def create_product_category(db: Session, category: schemas.ProductCategoryCreate):
+def create_product_category(db: Session, category: schemas.ProductCategoryCreate, api_key: str = Header(...)):
+    user = db.query(User).filter(User.api_key == api_key).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to create product")
     # query existing name
     existing_category = db.query(Product_Category).filter(Product_Category.category_name == category.category_name).first()
     # if there is 

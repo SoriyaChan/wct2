@@ -14,6 +14,7 @@ class UserLogin(BaseModel):
 
 class User(UserBase):
     userID: int
+    api_key: str
     password: str
 
     class Config:

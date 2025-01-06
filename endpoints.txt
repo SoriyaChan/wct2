@@ -3,7 +3,8 @@ User:
 Supplier:
 	Create Supplier(admin), Read Suppliers, Read Supplier
 Product:
-	Create Product(admin), Read Products, Read Product, Update Product(admin), Delete Product(admin), Read Product Stock
+	Create Product(admin), Read Products, Read Product, Update Product(admin), Delete Product(admin),
+	Read Product Stock, Create Product Category(admin), Read Product Category
 Order:
 	Create Order, Read Orders, Read Orderproduct
 Sale:

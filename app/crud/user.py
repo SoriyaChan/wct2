@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from ..models import User 
 from app.schemas import user as schemas
 from fastapi import HTTPException
-import hashlib
+import hashlib, secrets
 
 def create_user(db: Session, user: schemas.UserCreate):
     # query existing username and email
@@ -40,5 +40,9 @@ def authenticate_user(db: Session, user: schemas.UserLogin):
             status_code=401,
             detail="Incorrect password",
         )
+    # generate key
+    api_key = secrets.token_hex(32)
+    existing_user.api_key = api_key
+    db.commit()
     
-    return {"message": f"Welcome, {existing_user.role} {existing_user.userName}!"}
+    return {"api_key": api_key, "user_id": existing_user.userID, "role": existing_user.role}

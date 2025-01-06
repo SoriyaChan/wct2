@@ -28,6 +28,7 @@ class User(Base):
     userEmail = Column(String(30), nullable=False, unique=True)
     password = Column(String(50), nullable=False)
     role = Column(String, nullable=False)
+    api_key = Column(String, nullable=True)
 
 class Supplier(Base):
     __tablename__ = "Supplier"
@@ -35,7 +36,7 @@ class Supplier(Base):
     supplier_id = Column(Integer, primary_key=True, index=True)
     supplier_name = Column(String, index=True, nullable=False)
     address = Column(String, nullable=False)
-    phone = Column(String(20), nullable=False)
+    phone = Column(String, nullable=False)
 
     products = relationship("Product", back_populates="suppliers")
 

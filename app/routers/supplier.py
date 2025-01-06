@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
 from app.schemas import supplier as schemas
 from app.crud import supplier as crud
@@ -8,8 +8,8 @@ from typing import List
 router = APIRouter(prefix="/supplier", tags=["supplier"])
 
 @router.post("/create", response_model=schemas.Supplier)
-def create_supplier(supplier: schemas.SupplierCreate, db: Session = Depends(get_db)):
-    return crud.create_supplier(db=db, supplier=supplier)
+def create_supplier(supplier: schemas.SupplierCreate, api_key: str = Header(...), db: Session = Depends(get_db)):
+    return crud.create_supplier(db=db, supplier=supplier, api_key=api_key)
 
 @router.get("/read", response_model=List[schemas.Supplier])
 def read_suppliers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
