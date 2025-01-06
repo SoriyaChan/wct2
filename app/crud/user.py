@@ -14,6 +14,11 @@ def create_user(db: Session, user: schemas.UserCreate):
             status_code=409,
             detail="A user with this username or email already exists."
         )
+    if user.role == "admin" and not user.api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="API Key is required for admin role."
+        )
     # hash password
     hash_password = hashlib.sha512(user.password.encode())
     # add user
