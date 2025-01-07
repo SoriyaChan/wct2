@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Inventory Management System</h1>
+
+    <nav>
+        <a href="home.html">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">User</button>
+            <div class="dropdown-content">
+                <a href="register.html">Register</a>
+                <a href="login.html">Login</a>
+            </div>
+        </div>
+        <a href="supplier.html">Supplier</a>
+        <a href="product.html">Product</a>
+        <a href="category.html">Category</a>
+        <a href="order.html">Order</a>
+        <a href="sale.html">Sale</a>
+    </nav>
+
+    <section id="register">
+        <h2>Register</h2>
+        <form id="register-form" onsubmit="registerUser(event)">
+            <label>
+                Username:
+                <input type="text" name="userName" required />
+            </label>
+            <label>
+                Email:
+                <input type="email" name="userEmail" required />
+            </label>
+            <label>
+                Password:
+                <input type="password" name="password" required />
+            </label>
+            <label>
+                Role:
+                <select name="role">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </label>
+            <label id="api-key-label">
+                API Key:
+                <input type="text" name="api_key" />
+            </label>
+            <button type="submit">Register</button>
+        </form>
+    </section>
+
+    <script>
+        document.querySelector('select[name="role"]').addEventListener("change", function(event) {
+            const apiKeyLabel = document.getElementById("api-key-label");
+            if (event.target.value === "admin") {
+                apiKeyLabel.style.display = "block";
+            } else {
+                apiKeyLabel.style.display = "none";
+            }
+        });
+    
+        async function registerUser(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+    
+            if (data.role !== "admin") {
+                delete data.api_key;
+            }
+    
+            try {
+                const response = await fetch("http://localhost:8000/user/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                });
+    
+                if (response.ok) {
+                    const result = await response.json();
+                    alert("User/Admin registered successfully!");
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.detail}`);
+                }
+            } catch (err) {
+                alert("Failed to register user.");
+            }
+        }
+    </script>
+    
+</body>
+</html>

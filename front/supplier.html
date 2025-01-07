@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Inventory Management System</h1>
+
+    <nav>
+        <a href="home.html">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">User</button>
+            <div class="dropdown-content">
+                <a href="register.html">Register</a>
+                <a href="login.html">Login</a>
+            </div>
+        </div>
+        <a href="supplier.html">Supplier</a>
+        <a href="product.html">Product</a>
+        <a href="category.html">Category</a>
+        <a href="order.html">Order</a>
+        <a href="sale.html">Sale</a>
+    </nav>
+
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup">
+            <div class="popup-close">
+                <button onclick="togglePopup()">×</button>
+            </div>
+            <h2>Create Supplier</h2>
+            <form id="create-supplier-form" onsubmit="createSupplier(event)">
+                <label>
+                    Supplier Name:
+                    <input type="text" name="supplier_name" required />
+                </label>
+                <label>
+                    Address:
+                    <input type="text" name="address" required />
+                </label>
+                <label>
+                    Phone:
+                    <input type="text" name="phone" required />
+                </label>
+                <button type="submit">Create Supplier</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Button -->
+    <button id="add-button" onclick="togglePopup()">+</button>
+
+    <script>
+        async function createSupplier(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            const apiKey = localStorage.getItem("api_key");
+
+            if (!apiKey) {
+                alert("You must be logged in to create a supplier.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8000/supplier/create", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "api-key": apiKey 
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert("Supplier created successfully!");
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${JSON.stringify(error.detail || error)}`);
+                }
+            } catch (err) {
+                    alert(`Failed to create supplier: ${err.message}`);
+            }
+        }
+
+        // Function to toggle the popup
+        function togglePopup() {
+            const popupOverlay = document.getElementById('popup-overlay');
+            popupOverlay.style.display = popupOverlay.style.display === 'flex' ? 'none' : 'flex';
+        }
+    </script>
+
+</body>
+</html>
