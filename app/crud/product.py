@@ -14,6 +14,11 @@ def create_product(db: Session, product: schemas.ProductCreate, api_key: str = H
     # if none
     if supplier_id is None:
         raise HTTPException(status_code=404, detail="Supplier not found") 
+    # query there is an existing category
+    category_id = db.query(Supplier).filter(Product_Category.category_id == product.category_id).first()
+    # if none
+    if category_id is None:
+        raise HTTPException(status_code=404, detail="Category not found") 
     # add product
     db_product = Product(
         product_name=product.product_name,
@@ -91,7 +96,7 @@ def create_product_category(db: Session, category: schemas.ProductCategoryCreate
     if not user:
         raise HTTPException(status_code=401, detail="Invalid API key")
     if user.role != "admin":
-        raise HTTPException(status_code=403, detail="Not authorized to create product")
+        raise HTTPException(status_code=403, detail="Not authorized to create product category")
     # query existing name
     existing_category = db.query(Product_Category).filter(Product_Category.category_name == category.category_name).first()
     # if there is 

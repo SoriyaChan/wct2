@@ -19,14 +19,114 @@
             </div>
         </div>
         <a href="supplier.html">Supplier</a>
-        <a href="product.html">Product</a>
         <a href="category.html">Category</a>
+        <a href="product.html">Product</a>
         <a href="order.html">Order</a>
         <a href="sale.html">Sale</a>
     </nav>
 
-    <script>
+    <h2>Category</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Category Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="category-data">
+        </tbody>
+    </table>
 
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup">
+            <div class="popup-close">
+                <button onclick="togglePopup()">×</button>
+            </div>
+            <h2>Create Category</h2>
+            <form id="create-category-form" onsubmit="createCategory(event)">
+                <label>
+                    Category Name:
+                    <input type="text" name="category_name" required />
+                </label>
+                <label>
+                    Description:
+                    <input type="text" name="description" required />
+                </label>
+                <button type="submit">Create Category</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Button -->
+    <button id="add-button" onclick="togglePopup()">+</button>
+
+    <script>
+        async function createCategory(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            const apiKey = localStorage.getItem("api_key");
+
+            if (!apiKey) {
+                alert("You must be logged in to create a category.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8000/product/category/create", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "api-key": apiKey 
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert("Category created successfully!");
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${JSON.stringify(error.detail || error)}`);
+                }
+            } catch (err) {
+                alert(`Failed to create category: ${err.message}`);
+            }
+        }
+
+        // Function to toggle the popup
+        function togglePopup() {
+            const popupOverlay = document.getElementById('popup-overlay');
+            popupOverlay.style.display = popupOverlay.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // WebSocket connection to receive real-time product category updates
+        const websocket = new WebSocket("ws://localhost:8000/ws/categories");
+
+        websocket.onmessage = function(event) {
+            const categoryData = JSON.parse(event.data);
+            const tableBody = document.getElementById("category-data");
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            categoryData.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.category_id}</td>
+                    <td>${item.category_name}</td>
+                    <td>${item.description || "N/A"}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        websocket.onclose = function() {
+            alert("WebSocket connection closed. Please refresh the page to reconnect.");
+        };
+
+        websocket.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
     </script>
 </body>
 </html>

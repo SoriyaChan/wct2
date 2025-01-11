@@ -19,11 +19,25 @@
             </div>
         </div>
         <a href="supplier.html">Supplier</a>
-        <a href="product.html">Product</a>
         <a href="category.html">Category</a>
+        <a href="product.html">Product</a>
         <a href="order.html">Order</a>
         <a href="sale.html">Sale</a>
     </nav>
+
+    <h2>Supplier</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Supplier Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody id="supplier-data">
+        </tbody>
+    </table>
 
     <div class="popup-overlay" id="popup-overlay">
         <div class="popup">
@@ -91,6 +105,34 @@
             const popupOverlay = document.getElementById('popup-overlay');
             popupOverlay.style.display = popupOverlay.style.display === 'flex' ? 'none' : 'flex';
         }
+
+        // WebSocket connection to receive real-time supplier updates
+        const websocket = new WebSocket("ws://localhost:8000/ws/suppliers");
+
+        websocket.onmessage = function(event) {
+            const supplierData = JSON.parse(event.data);
+            const tableBody = document.getElementById("supplier-data");
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            supplierData.forEach(item => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.supplier_id}</td>
+                    <td>${item.supplier_name}</td>
+                    <td>${item.address}</td>
+                    <td>${item.phone}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        };
+
+        websocket.onclose = function() {
+            alert("WebSocket connection closed. Please refresh the page to reconnect.");
+        };
+
+        websocket.onerror = function(error) {
+            console.error("WebSocket error:", error);
+        };
     </script>
 
 </body>
