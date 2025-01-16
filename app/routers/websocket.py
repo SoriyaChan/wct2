@@ -1,7 +1,7 @@
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter, Depends
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
-from ..models import Product_Inventory, Supplier, Product, Product_Category, Order, Sale
+from ..models import Product_Inventory, Supplier, Product, Product_Category, OrderProductAssociation, SaleProductAssociation
 from ..dependency import get_db
 import json
 import asyncio
@@ -133,12 +133,13 @@ async def websocket_order_endpoint(websocket: WebSocket, db: Session = Depends(g
     await manager.connect(websocket)
     try:
         while True:
-            data = db.query(Order).all()
+            data = db.query(OrderProductAssociation).all()
             order_data = [
                 {
                     "order_id": item.order_id,
-                    "total_price": item.total_price,
-                    "order_date": item.order_date.isoformat()
+                    "product_id": item.product_id,
+                    "quantity": item.quantity,
+                    "unit_price": item.unit_price,
                 }
                 for item in data
             ]
@@ -158,12 +159,13 @@ async def websocket_sales_endpoint(websocket: WebSocket, db: Session = Depends(g
     try:
         while True:
             # Query all sale data from the database
-            data = db.query(Sale).all()
+            data = db.query(SaleProductAssociation).all()
             sale_data = [
                 {
                     "sale_id": item.sale_id,
-                    "total_price": item.total_price,
-                    "sale_date": item.sale_date.isoformat()
+                    "product_id": item.product_id,
+                    "quantity": item.quantity,
+                    "unit_price": item.unit_price,
                 }
                 for item in data
             ]
